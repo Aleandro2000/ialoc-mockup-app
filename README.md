@@ -95,7 +95,7 @@
 |------------|---------|---------|
 | Laravel | 12.x | PHP framework |
 | PHP | 8.2+ | Server-side language |
-| SQLite/MySQL | - | Database |
+| SQLite/MySQL/PostgreSQL | - | Database |
 | Nginx | Alpine | Web server |
 | Docker | - | Containerization |
 
