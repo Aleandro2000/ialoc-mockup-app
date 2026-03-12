@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <img src="assets/icon/ialoc-logo.svg" alt="ialoc" class="header-logo">
+    </ion-buttons>
+    <ion-title>Mese</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div *ngIf="loading$ | async" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Se incarca...</p>
+  </div>
+
+  <div class="content-container" *ngIf="!(loading$ | async)">
+    <div class="page-header">
+      <h2>Mesele Restaurantului</h2>
+      <p>{{ (tables$ | async)?.length }} mese disponibile</p>
+    </div>
+
+    <div class="tables-grid">
+      <div *ngFor="let table of tables$ | async" class="table-card">
+        <div class="table-icon">
+          <ion-icon name="restaurant"></ion-icon>
+        </div>
+        <div class="table-info">
+          <h3>{{ table.name }}</h3>
+          <div class="capacity-info">
+            <ion-icon name="people-outline"></ion-icon>
+            <span>{{ table.min_capacity }} - {{ table.max_capacity }} persoane</span>
+          </div>
+        </div>
+        <div class="table-badge">
+          <span class="capacity-badge">{{ table.max_capacity }}</span>
+          <span class="capacity-label">max</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,60 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <img src="assets/icon/ialoc-logo.svg" alt="ialoc" class="header-logo">
+    </ion-buttons>
+    <ion-title>Rezervari Azi</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="ngOnInit(); $event.target.complete()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="loading$ | async" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Se incarca...</p>
+  </div>
+
+  <ion-card *ngIf="error$ | async as error" color="danger" class="error-card">
+    <ion-card-content>
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      {{ error }}
+    </ion-card-content>
+  </ion-card>
+
+  <div class="content-container" *ngIf="!(loading$ | async)">
+    <div *ngIf="(reservations$ | async)?.length === 0" class="empty-state">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <h3>Nicio rezervare</h3>
+      <p>Nu exista rezervari pentru astazi</p>
+    </div>
+
+    <div class="reservations-list">
+      <div *ngFor="let reservation of reservations$ | async" class="reservation-card">
+        <div class="reservation-time">
+          <span class="time">{{ formatTime(reservation.reservation_time) }}</span>
+        </div>
+        <div class="reservation-info">
+          <h3>{{ reservation.guest_name }}</h3>
+          <div class="details">
+            <span class="detail">
+              <ion-icon name="people-outline"></ion-icon>
+              {{ reservation.guest_count }} persoane
+            </span>
+            <span class="detail" *ngIf="reservation.table">
+              <ion-icon name="restaurant-outline"></ion-icon>
+              {{ reservation.table.name }}
+            </span>
+          </div>
+        </div>
+        <div class="reservation-status">
+          <ion-badge [color]="getStatusColor(reservation.status)">
+            {{ reservation.status }}
+          </ion-badge>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,115 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <img src="assets/icon/ialoc-logo.svg" alt="ialoc" class="header-logo">
+    </ion-buttons>
+    <ion-title>Rezervare Noua</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="form-container">
+    <div class="form-header">
+      <ion-icon name="add-circle" class="form-icon"></ion-icon>
+      <h2>Adauga Rezervare</h2>
+      <p>Completeaza datele pentru o rezervare noua</p>
+    </div>
+
+    <ion-card *ngIf="error$ | async as error" color="danger" class="error-card">
+      <ion-card-content>
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        {{ error }}
+      </ion-card-content>
+    </ion-card>
+
+    <div class="form-card">
+      <div class="form-group">
+        <label>Nume Client</label>
+        <div class="input-wrapper">
+          <ion-icon name="person-outline"></ion-icon>
+          <ion-input
+            [(ngModel)]="guestName"
+            placeholder="Introduceti numele"
+            type="text"
+          ></ion-input>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Numar Persoane</label>
+        <div class="input-wrapper">
+          <ion-icon name="people-outline"></ion-icon>
+          <ion-input
+            [(ngModel)]="guestCount"
+            type="number"
+            min="1"
+            max="20"
+            (ionChange)="onGuestCountChange()"
+          ></ion-input>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data</label>
+          <div class="input-wrapper">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <ion-input
+              [(ngModel)]="reservationDate"
+              type="date"
+              (ionChange)="onDateTimeChange()"
+            ></ion-input>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Ora</label>
+          <div class="input-wrapper">
+            <ion-icon name="time-outline"></ion-icon>
+            <ion-input
+              [(ngModel)]="reservationTime"
+              type="time"
+              (ionChange)="onDateTimeChange()"
+            ></ion-input>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Masa</label>
+        <div class="input-wrapper select-wrapper">
+          <ion-icon name="restaurant-outline"></ion-icon>
+          <ion-select [(ngModel)]="selectedTableId" placeholder="Selectati masa" interface="action-sheet">
+            <ion-select-option *ngFor="let table of tables$ | async" [value]="table.id">
+              {{ table.name }} ({{ table.min_capacity }}-{{ table.max_capacity }} pers.)
+            </ion-select-option>
+          </ion-select>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="suggestedTable$ | async as suggestedTable" class="suggestion-card">
+      <div class="suggestion-content">
+        <ion-icon name="bulb-outline"></ion-icon>
+        <div class="suggestion-text">
+          <span class="suggestion-label">Masa Sugerata</span>
+          <span class="suggestion-table">{{ suggestedTable.name }}</span>
+          <span class="suggestion-capacity">{{ suggestedTable.min_capacity }}-{{ suggestedTable.max_capacity }} persoane</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <ion-button expand="block" (click)="submitReservation()" [disabled]="loading$ | async" class="submit-btn">
+        <ion-spinner *ngIf="loading$ | async" name="crescent"></ion-spinner>
+        <ion-icon *ngIf="!(loading$ | async)" name="checkmark-circle-outline" slot="start"></ion-icon>
+        <span *ngIf="!(loading$ | async)">Adauga Rezervare</span>
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" (click)="resetForm()" class="reset-btn">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+        Reseteaza
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
